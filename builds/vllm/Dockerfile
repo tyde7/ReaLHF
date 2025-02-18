@@ -8,7 +8,7 @@ ARG SCCACHE_BUCKET_NAME=vllm-build-sccache
 ARG SCCACHE_REGION_NAME=us-west-2
 ARG SCCACHE_S3_NO_CREDENTIALS=1
 RUN echo "Installing sccache..." \
-        && curl -L -o sccache.tar.gz https://github.com/mozilla/sccache/releases/download/v0.8.1/sccache-v0.9.1-x86_64-unknown-linux-musl.tar.gz \
+        && curl -L -o sccache.tar.gz https://github.com/mozilla/sccache/releases/download/v0.9.1/sccache-v0.9.1-x86_64-unknown-linux-musl.tar.gz \
         && tar -xzf sccache.tar.gz \
         && mv sccache-v0.9.1-x86_64-unknown-linux-musl/sccache /usr/bin/sccache \
         && rm -rf sccache.tar.gz sccache-v0.9.1-x86_64-unknown-linux-musl \
