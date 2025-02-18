@@ -6,7 +6,7 @@ RUN git clone --depth=1 -b v0.6.3.post1 https://github.com/vllm-project/vllm.git
 RUN apt install kmod ccache -y
 ARG SCCACHE_BUCKET_NAME=vllm-build-sccache
 ARG SCCACHE_REGION_NAME=us-west-2
-ARG SCCACHE_S3_NO_CREDENTIALS=1
+ARG SCCACHE_S3_NO_CREDENTIALS=0
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
 ARG SCCACHE_INIT_FLAG="no"
