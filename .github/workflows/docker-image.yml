@@ -53,7 +53,8 @@ jobs:
           remove-haskell: 'true'
           remove-codeql: 'true'
           remove-docker-images: 'true'
-      
+      - name: Restart docker
+        run: sudo service docker restart
       - uses: actions/checkout@v4
 
       - name: Show disk space
