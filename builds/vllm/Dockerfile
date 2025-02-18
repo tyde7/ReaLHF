@@ -4,8 +4,8 @@ LABEL org.opencontainers.image.description="ReaLHF with vllm v0.6.3.post1 local 
 
 RUN git clone --depth=1 -b v0.6.3.post1 https://github.com/vllm-project/vllm.git /vllm
 RUN apt install kmod ccache -y
-ARG SCCACHE_BUCKET_NAME=vllm-build-sccache
-ARG SCCACHE_REGION_NAME=us-west-2
+ARG SCCACHE_BUCKET=vllm-build-sccache
+ARG SCCACHE_REGION=us-west-2
 ARG SCCACHE_S3_NO_CREDENTIALS=1
 RUN echo "Installing sccache..." \
         && curl -L -o sccache.tar.gz https://github.com/mozilla/sccache/releases/download/v0.9.1/sccache-v0.9.1-x86_64-unknown-linux-musl.tar.gz \
