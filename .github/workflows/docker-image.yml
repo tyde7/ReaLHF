@@ -44,7 +44,19 @@ jobs:
       contents: read
       #
     steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+      
       - uses: actions/checkout@v4
+
+      - name: Show disk space
+        run: |
+          echo "Free space:"
+          df -h
 
       - name: Build image
         run: docker build . --file builds/vllm/Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
