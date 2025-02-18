@@ -25,10 +25,10 @@ RUN echo "Installing sccache..." && echo ${SCCACHE_INIT_FLAG} \
         && sccache --show-stats \
         && python3 setup.py bdist_wheel --dist-dir=dist --py-limited-api=cp38 \
         && sccache --show-stats;
-RUN cd /vllm && sccache --show-stats && pip3 install opencv-python==4.8.0.76 && \
+RUN cd /vllm && sccache --show-stats && \
     python3 use_existing_torch.py && \
     pip3 install -r requirements-build.txt  -i  https://mirrors.aliyun.com/pypi/simple/ && \
-    MAX_JOBS=2  pip3 install -e . --no-build-isolation  -i  https://mirrors.aliyun.com/pypi/simple/ && sccache --show-stats
+    MAX_JOBS=2  pip3 install -e . --no-build-isolation  -i  https://mirrors.aliyun.com/pypi/simple/ && sccache --show-stats && pip3 install opencv-python==4.8.0.76
 
 RUN python3 -c "import flash_attn"
 RUN python3 -c "import vllm"
