@@ -1,4 +1,6 @@
 FROM garrett4wade/real-gpu:24.07-py3-0.3.0
+LABEL org.opencontainers.image.source=https://github.com/tyde7/ReaLHF
+LABEL org.opencontainers.image.description=ReaLHF with vllm v0.6.3.post1 local build"
 
 RUN git clone --depth=1 -b v0.6.3.post1 https://github.com/vllm-project/vllm.git /vllm
 RUN apt install kmod ccache -y
