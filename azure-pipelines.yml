@@ -26,6 +26,6 @@ stages:
         containerRegistry: 'ghcr'
         repository: 'tyde7/realhf-builds'
         command: 'buildAndPush'
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        dockerfile: '$(Build.SourcesDirectory)/builds/vllm/Dockerfile'
         tags: |
           $(tag)
