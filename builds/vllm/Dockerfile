@@ -20,7 +20,7 @@ RUN echo "Installing sccache..." && echo ${SCCACHE_INIT_FLAG} \
         && export SCCACHE_S3_NO_CREDENTIALS=${SCCACHE_S3_NO_CREDENTIALS} \
         && export SCCACHE_IDLE_TIMEOUT=0 \
         && export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \ 
-        && export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+        && export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
         && export CMAKE_BUILD_TYPE=Release \
         && sccache --show-stats \
         && python3 setup.py bdist_wheel --dist-dir=dist --py-limited-api=cp38 \
