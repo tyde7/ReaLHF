@@ -50,6 +50,8 @@ jobs:
           root-reserve-mb: 81920
           swap-size-mb: 1024
           remove-dotnet: 'true'
+          overprovision-lvm: 'true'
+          remove-android: 'true'
       
       - uses: actions/checkout@v4
 
