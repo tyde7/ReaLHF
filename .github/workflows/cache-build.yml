@@ -18,39 +18,39 @@
 #       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
 
 #
-name: Docker Image CI with Cache
+# name: Docker Image CI with Cache
 
-# This workflow runs when any of the following occur:
-# - A push is made to a branch called `main` or `seed`
-# - A tag starting with "v" is created
-# - A pull request is created or updated
-on:
-  workflow_dispatch:
-env:
-  IMAGE_NAME: realhf-vllm
-#
-jobs:
-  # This pushes the image to GitHub Packages.
-  push:
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
-      #
-    steps:
+# # This workflow runs when any of the following occur:
+# # - A push is made to a branch called `main` or `seed`
+# # - A tag starting with "v" is created
+# # - A pull request is created or updated
+# on:
+#   workflow_dispatch:
+# env:
+#   IMAGE_NAME: realhf-vllm
+# #
+# jobs:
+#   # This pushes the image to GitHub Packages.
+#   push:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       packages: write
+#       contents: read
+#       #
+#     steps:
 
 
-      - name: Show disk space
-        run: |
-          echo "Free space:"
-          df -h
-          mkdir ~/.cache || true
+#       - name: Show disk space
+#         run: |
+#           echo "Free space:"
+#           df -h
+#           mkdir ~/.cache || true
       
-      - name: Show something from cache
-        run: cat ~/.cache/testfile || echo "nothing to show"
+#       - name: Show something from cache
+#         run: cat ~/.cache/testfile || echo "nothing to show"
         
-      - name: Write something to cache
-        run: touch ~/.cache/testfile && echo "${{ github.ref }}" > ~/.cache/testfile
+#       - name: Write something to cache
+#         run: touch ~/.cache/testfile && echo "${{ github.ref }}" > ~/.cache/testfile
 
       
 name: Docker Image CI with Cache
