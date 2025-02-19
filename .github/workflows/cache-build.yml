@@ -95,6 +95,7 @@ jobs:
         with:
           path: |
             ~/.cache
+            /ccache
           key: ${{ runner.os }}-vllm-build-cache
           restore-keys: |
             ${{ runner.os }}-vllm-build-cache
@@ -109,8 +110,8 @@ jobs:
 
       - name: Init and ls cache
         run: |
-          mkdir ~/.cache/ccache -p || true
-          ls ~/.cache/ccache
+          mkdir /ccache -p || true
+          ls /ccache
           
 
       - name: Build image
