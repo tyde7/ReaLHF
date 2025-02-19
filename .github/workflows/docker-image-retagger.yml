@@ -1,0 +1,67 @@
+name: Docker Image Retagger
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag1:
+        description: 'Original tag (e.g. v1.0.0)'
+        required: true
+        type: string
+      tag2:
+        description: 'New tag (e.g. latest)'
+        required: true
+        type: string
+      imagename:
+        description: 'Image Name'
+        required: true
+        type: string
+
+jobs:
+  retag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check tag parameters
+        id: check-tags
+        run: |
+          if [ -z "${{ github.event.inputs.tag1 }}" ] || [ -z "${{ github.event.inputs.tag2 }}" ]; then
+            echo "::warning::One or both tags are empty, skipping operation"
+            echo "SKIP=true" >> $GITHUB_ENV
+          else
+            echo "SKIP=false" >> $GITHUB_ENV
+          fi
+
+      - name: Log skip status
+        if: env.SKIP == 'true'
+        run: echo "No valid tags provided, operation skipped"
+
+      - name: Retag and push image
+        if: env.SKIP == 'false'
+        env:
+          REGISTRY: ghcr.io
+          USERNAME: ${{ github.repository_owner }}
+          IMAGE_NAME: ${{ github.event.inputs.imagename }}
+          TAG1: ${{ github.event.inputs.tag1 }}
+          TAG2: ${{ github.event.inputs.tag2 }}
+        run: |
+          echo "Retagging $REGISTRY/$USERNAME/$IMAGE_NAME:$TAG1 to $TAG2"
+          
+          # Login to GitHub Container Registry
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login $REGISTRY -u $USERNAME --password-stdin
+          
+          # Pull original image
+          docker pull $REGISTRY/$USERNAME/$IMAGE_NAME:$TAG1
+          
+          # Add new tag
+          docker tag $REGISTRY/$USERNAME/$IMAGE_NAME:$TAG1 $REGISTRY/$USERNAME/$IMAGE_NAME:$TAG2
+          
+          # Push new tag
+          docker push $REGISTRY/$USERNAME/$IMAGE_NAME:$TAG2
+          
+          echo "Operation completed successfully"
+
+      - name: Cleanup workspace
+        if: always()
+        run: |
+          docker rmi $REGISTRY/$USERNAME/$IMAGE_NAME:$TAG1 || true
+          docker rmi $REGISTRY/$USERNAME/$IMAGE_NAME:$TAG2 || true
+          echo "Cleanup completed"
