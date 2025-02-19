@@ -144,7 +144,7 @@ jobs:
           
       - name: Summary Cache Info
         run: |
-          ls ~/.cache/ccache
-          cd ~/.cache/ccache || true
+          ls /ccache
+          cd /ccache || true
           du -h -d 1 || true
           
