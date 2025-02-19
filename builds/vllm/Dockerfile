@@ -4,8 +4,8 @@ LABEL org.opencontainers.image.description="ReaLHF with vllm v0.6.3.post1 local 
 
 RUN git clone --depth=1 -b v0.6.3.post1 https://github.com/vllm-project/vllm.git /vllm
 RUN apt install kmod ccache -y
-RUN mkdir -p /tmp/ccache
-RUN --mount=type=cache,source=/ccache,dst=/tmp/ccache export CCACHE_DIR=/tmp/ccache && export CCACHE_COMPRESS=1 && export CCACHE_COMPILERCHECK=content && ls /tmp/ccache && cd /vllm && \
+RUN mkdir -p /ccache
+RUN --mount=type=cache,source=/run/ccache,dst=/ccache export CCACHE_DIR=/tmp/ccache && export CCACHE_COMPRESS=1 && export CCACHE_COMPILERCHECK=content && ls /tmp/ccache && cd /vllm && \
     python3 use_existing_torch.py && \
     pip3 install -r requirements-build.txt  -i  https://mirrors.aliyun.com/pypi/simple/ && \
     MAX_JOBS=2 pip3 install -e . --no-build-isolation  -i  https://mirrors.aliyun.com/pypi/simple/
