@@ -95,7 +95,7 @@ jobs:
         with:
           path: |
             ~/.cache
-            /ccache
+            /tmp/ccache
           key: ${{ runner.os }}-vllm-build-cache
           restore-keys: |
             ${{ runner.os }}-vllm-build-cache
