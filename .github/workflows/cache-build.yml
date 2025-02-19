@@ -1,0 +1,55 @@
+# name: Docker Image CI
+
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+
+# jobs:
+
+#   build:
+
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - uses: actions/checkout@v4
+#     - name: Build the Docker image
+#       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+
+#
+name: Docker Image CI with Cache
+
+# This workflow runs when any of the following occur:
+# - A push is made to a branch called `main` or `seed`
+# - A tag starting with "v" is created
+# - A pull request is created or updated
+on:
+  workflow_dispatch:
+env:
+  IMAGE_NAME: realhf-vllm
+#
+jobs:
+  # This pushes the image to GitHub Packages.
+  push:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      #
+    steps:
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache
+          key: ${{ runner.os }}-vllm-build-cache
+          restore-keys: |
+            ${{ runner.os }}-vllm-build-cache
+
+      - name: Show disk space
+        run: |
+          echo "Free space:"
+          df -h
+      
+      - name: Write something to cache
+        run: cat ~/.cache/testfile && echo "${{ github.ref }}" > ~/.cache/testfile
