@@ -38,13 +38,7 @@ jobs:
       contents: read
       #
     steps:
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache
-          key: ${{ runner.os }}-vllm-build-cache
-          restore-keys: |
-            ${{ runner.os }}-vllm-build-cache
+
 
       - name: Show disk space
         run: |
@@ -59,3 +53,97 @@ jobs:
         run: touch ~/.cache/testfile && echo "${{ github.ref }}" > ~/.cache/testfile
 
       
+name: Docker Image CI with Cache
+
+# This workflow runs when any of the following occur:
+# - A push is made to a branch called `main` or `seed`
+# - A tag starting with "v" is created
+# - A pull request is created or updated
+on:
+  workflow_dispatch:
+  push:
+  #   branches:
+  #     - main
+    tags:
+      - imagerelease-*
+  pull_request:
+env:
+  IMAGE_NAME: realhf-vllm
+#
+jobs:
+  # This pushes the image to GitHub Packages.
+  push:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      #
+    steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          build-mount-path: /var/lib/docker/
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
+      - name: Restart docker
+        run: sudo service docker restart
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache
+          key: ${{ runner.os }}-vllm-build-cache
+          restore-keys: |
+            ${{ runner.os }}-vllm-build-cache
+
+      - name: Show disk space
+        run: |
+          echo "Free space:"
+          df -h
+      
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Init and ls cache
+        run: |
+          mkdir ~/.cache/ccache -p || true
+          ls ~/.cache/ccache
+          
+
+      - name: Build image
+        run: docker build builds/vllm --file builds/vllm/Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"   --build-arg SCCACHE_BUCKET=${{ secrets.SCCACHE_BUCKET }} --build-arg SCCACHE_REGION=${{ secrets.SCCACHE_REGION }} --build-arg SCCACHE_ENDPOINT=${{ secrets.SCCACHE_ENDPOINT }} --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} --build-arg SCCACHE_INIT_FLAG="yes"
+
+      - name: Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+
+          # This changes all uppercase characters to lowercase.
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # This strips the git ref prefix from the version.
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          SHORT_HASH=$(echo "${{ github.sha }}" | cut -c 1-8)
+          # This strips the "v" prefix from the tag name.
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^imagerelease-//')
+          # This uses the Docker `latest` tag convention.
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:builds-$SHORT_HASH
+          docker push $IMAGE_ID:runs-${GITHUB_RUN_ID}
+          echo "---Productions---"
+          echo $IMAGE_ID:$VERSION
+          echo $IMAGE_ID:$SHORT_HASH
+          echo $IMAGE_ID:runs-${GITHUB_RUN_ID}
+
+          
+      - name: Summary Cache Info
+        run: |
+          ls ~/.cache/ccache
+          cd ~/.cache/ccache || true
+          du -h -d 1 || true
+          
