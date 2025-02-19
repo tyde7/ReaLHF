@@ -110,8 +110,8 @@ jobs:
 
       - name: Init and ls cache
         run: |
-          mkdir /ccache -p || true
-          ls /ccache
+          mkdir /run/ccache -p || true
+          ls /run/ccache
           
 
       - name: Build image
