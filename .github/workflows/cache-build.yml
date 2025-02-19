@@ -51,5 +51,10 @@ jobs:
           echo "Free space:"
           df -h
       
+      - name: Show something from cache
+        run: cat ~/.cache/testfile || echo "nothing to show"
+        
       - name: Write something to cache
-        run: cat ~/.cache/testfile && echo "${{ github.ref }}" > ~/.cache/testfile
+        run: echo "${{ github.ref }}" > ~/.cache/testfile
+
+      
