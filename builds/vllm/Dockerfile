@@ -15,8 +15,9 @@ RUN echo "Installing sccache..." && echo ${SCCACHE_INIT_FLAG} \
         && curl -L -o sccache.tar.gz https://github.com/mozilla/sccache/releases/download/v0.9.1/sccache-v0.9.1-x86_64-unknown-linux-musl.tar.gz \
         && tar -xzf sccache.tar.gz \
         && mv sccache-v0.9.1-x86_64-unknown-linux-musl/sccache /usr/bin/sccache \
-        && rm -rf sccache.tar.gz sccache-v0.9.1-x86_64-unknown-linux-musl \
-        && export SCCACHE_BUCKET=${SCCACHE_BUCKET_NAME} \
+        && rm -rf sccache.tar.gz sccache-v0.9.1-x86_64-unknown-linux-musl 
+        
+RUN export SCCACHE_BUCKET=${SCCACHE_BUCKET_NAME} \
         && export SCCACHE_REGION=${SCCACHE_REGION_NAME} \
         && export SCCACHE_S3_NO_CREDENTIALS=${SCCACHE_S3_NO_CREDENTIALS} \
         && export SCCACHE_IDLE_TIMEOUT=0 \
