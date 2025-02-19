@@ -50,11 +50,12 @@ jobs:
         run: |
           echo "Free space:"
           df -h
+          mkdir ~/.cache || true
       
       - name: Show something from cache
         run: cat ~/.cache/testfile || echo "nothing to show"
         
       - name: Write something to cache
-        run: echo "${{ github.ref }}" > ~/.cache/testfile
+        run: touch ~/.cache/testfile && echo "${{ github.ref }}" > ~/.cache/testfile
 
       
