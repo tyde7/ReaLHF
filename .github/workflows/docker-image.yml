@@ -76,21 +76,25 @@ jobs:
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
           # This strips the git ref prefix from the version.
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          SHORT_HASH=$(echo "${{ github.sha }}" | cut -c 1-8)
+          SHORTHASH=$(echo "${{ github.sha }}" | cut -c 1-8)
+          DATESTRING=$(date +"%Y%m%d")
           # This strips the "v" prefix from the tag name.
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^imagerelease-//')
           # This uses the Docker `latest` tag convention.
           [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
+          echo DATESTRING=$DATESTRING
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$SHORT_HASH
-          docker push $IMAGE_ID:runs-${GITHUB_RUN_ID}
-          echo "---Productions---"
-          echo $IMAGE_ID:$VERSION
-          echo $IMAGE_ID:$SHORT_HASH
-          echo $IMAGE_ID:runs-${GITHUB_RUN_ID}
+          docker tag $IMAGE_NAME $IMAGE_ID:nightly-$DATESTRING-$SHORTHASH
+          docker tag $IMAGE_NAME $IMAGE_ID:nightly-runs-${GITHUB_RUN_ID}
 
+          docker push $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:nightly-$DATESTRING-$SHORTHASH
+          docker push $IMAGE_ID:nightly-runs-${GITHUB_RUN_ID}
+          echo "---Image Products---"
+          echo $IMAGE_ID:$VERSION
+          echo $IMAGE_ID:nightly-$DATESTRING-$SHORTHASH
+          echo $IMAGE_ID:nightly-runs-${GITHUB_RUN_ID}
 
 
