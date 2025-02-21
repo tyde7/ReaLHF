@@ -9,5 +9,8 @@ RUN yes | pip3 uninstall uvloop
 RUN pip3 install opencv-python-headless==4.5.4.58
 
 RUN apt-get update && apt-get install -y python3.10-venv
+
+RUN git clone --depth=1 https://github.com/QwenLM/Qwen2.5-Math /qwen2_5-math && mv /qwen2_5-math/evaluation/latex2sympy /latex2sympy
 RUN python3 -m venv /sympy
-RUN /sympy/bin/pip install regex numpy tqdm datasets python_dateutil sympy==1.12 antlr4-python3-runtime==4.11.1 latex2sympy2 word2number Pebble timeout-decorator prettytable
+RUN /sympy/bin/pip install /latex2sympy
+RUN /sympy/bin/pip install regex numpy tqdm datasets python_dateutil sympy==1.12 antlr4-python3-runtime==4.11.1 word2number Pebble timeout-decorator prettytable
