@@ -1,4 +1,4 @@
-FROM garrett4wade/real-gpu:24.07-py3-0.3.0
+FROM garrett4wade/real-gpu:23.11-py3-0.3.0
 RUN git clone --depth=1 -b v0.6.3.post1 https://github.com/vllm-project/vllm.git /vllm
 RUN apt install kmod ccache -y
 RUN cd /vllm && \
