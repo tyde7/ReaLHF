@@ -19,4 +19,6 @@ FROM ghcr.io/inclusionai/areal-runtime:v0.1.0
 
 RUN pip3 install ninja
 # Set TORCH_CUDA_ARCH_LIST if running and building on different GPU types
-RUN MAX_JOBS=2 pip install -v -U git+https://github.com/facebookresearch/xformers.git@v0.0.27.post2
+
+
+RUN cd / && git clone --depth=1 https://github.com/Dao-AILab/flash-attention && cd flash-attention/hopper && MAX_JOBS=2 python3 setup.py install
