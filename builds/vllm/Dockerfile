@@ -21,4 +21,4 @@ RUN pip3 install ninja
 # Set TORCH_CUDA_ARCH_LIST if running and building on different GPU types
 
 
-RUN cd / && git clone --depth=1 https://github.com/Dao-AILab/flash-attention && cd flash-attention/hopper && MAX_JOBS=2 python3 setup.py install
+RUN cd / && git clone --depth=1 https://github.com/Dao-AILab/flash-attention && cd flash-attention/hopper && MAX_JOBS=1 python3 setup.py install
